@@ -1,10 +1,12 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import Data from '../data/Data'
+
+import NotefulContext from '../contextFolder/notefulContext'
 
 class Note extends React.Component{
+  static contextType = NotefulContext;
   render(){
-    const noteForRender = Data.notes.filter(note=>
+    const noteForRender = this.context.notes.filter(note=>
       note.id ===this.props.match.params.noteId)
     console.log(noteForRender,'test note for render')
     return(

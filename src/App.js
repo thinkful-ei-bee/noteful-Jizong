@@ -7,6 +7,7 @@ import FolderMain from './folder/FolderMain'
 import MainMain from './main/MainMain'
 import Note from './note/Note'
 import FolderSidebar from './folder/FolderSidebar';
+import NotefulContext from './contextFolder/notefulContext'
 
 class App extends Component {
   constructor(props){
@@ -27,7 +28,13 @@ class App extends Component {
   
   render() {
     console.log(this.state)
+    const value={
+      folders:this.state.folders,
+      notes:this.state.notes
+    }
     return (
+      <NotefulContext.Provider value={value}>
+
       <div className="App">
         <header>
           <Link to='/'>
@@ -36,44 +43,31 @@ class App extends Component {
         </header>
         <nav>
         <Route exact path='/' 
-        render={routeProps=>{
-          const data=this.state
-          return (<MainSidebar data={data} {...routeProps}/>)
-        }
-      }/>
+        component={MainSidebar}/>
+     
         <Route path='/folder' 
-        render={routeProps=>{
-          const data=this.state
-          return (<FolderSidebar data={data} {...routeProps}/>)
-        }
-      }/>
+         component={FolderSidebar}/>
+     
        
         </nav>
         
         <main>
         <Route exact path='/' 
-        render={routeProps=>{
-          const data=this.state
-          return (<MainMain data={data} {...routeProps}/>)
-        }
-      }/>
+         component={MainMain}/>
+        
           <Route path='/folder/:folderId' 
-        render={routeProps=>{
-          const data=this.state
-          return (<FolderMain data={data} {...routeProps}/>)
-        }
-      }/>
+         component={FolderMain}/>
+      
 
       <Route path='/note/:noteId' 
-        render={routeProps=>{
-          const data=this.state
-          return (<Note data={data} {...routeProps}/>)
-        }
-      }/>
+         component={Note}/>
+      
+      
           
           
         </main>
       </div>
+      </NotefulContext.Provider>
     );
   }
 }
