@@ -35,14 +35,43 @@ class App extends Component {
           </Link>
         </header>
         <nav>
-        <Route exact path='/' component={MainSidebar} />
-        <Route path='/folder' component={FolderSidebar} />
+        <Route exact path='/' 
+        render={routeProps=>{
+          const data=this.state
+          return (<MainSidebar data={data} {...routeProps}/>)
+        }
+      }/>
+        <Route path='/folder' 
+        render={routeProps=>{
+          const data=this.state
+          return (<FolderSidebar data={data} {...routeProps}/>)
+        }
+      }/>
+       
         </nav>
         
         <main>
-          <Route exact path='/' component={MainMain}/>
-          <Route  path='/folder/:folderId' component={FolderMain}/>
-          <Route path='/note/:noteId' component={Note}/>
+        <Route exact path='/' 
+        render={routeProps=>{
+          const data=this.state
+          return (<MainMain data={data} {...routeProps}/>)
+        }
+      }/>
+          <Route path='/folder/:folderId' 
+        render={routeProps=>{
+          const data=this.state
+          return (<FolderMain data={data} {...routeProps}/>)
+        }
+      }/>
+
+      <Route path='/note/:noteId' 
+        render={routeProps=>{
+          const data=this.state
+          return (<Note data={data} {...routeProps}/>)
+        }
+      }/>
+          
+          
         </main>
       </div>
     );

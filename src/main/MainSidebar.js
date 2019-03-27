@@ -1,12 +1,12 @@
 import React from 'react'
-import Data from '../data/Data'
+
 import {Link} from 'react-router-dom'
 class MainSidebar extends React.Component{
   render(){
- 
+    console.log(this.props.data,'test routeprop')
     return(
       <ul>
-      {Data.folders.map(folder=>
+      {this.props.data.folders.map(folder=>
       <li key={folder.id}>
       <Link to={`/folder/${folder.id}`}>
       {folder.name}
