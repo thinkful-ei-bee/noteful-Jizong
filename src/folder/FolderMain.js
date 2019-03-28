@@ -44,7 +44,7 @@ render(){
         onClick={()=>noteRemoveRequest(note.id,this.context.removeNote)}
         >Remove</button>
       </li>)}
-      <button>Add note</button>
+      <Link to='/notes/addNote'>Add note</Link>
     </ul>
   )
 }

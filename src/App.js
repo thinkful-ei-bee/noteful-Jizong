@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import {Route,Link} from 'react-router-dom'
-
+import AddFolder from './folder/AddFolder'
 import MainSidebar from './main/MainSidebar'
 import FolderMain from './folder/FolderMain'
 import MainMain from './main/MainMain'
 import Note from './note/Note'
 import FolderSidebar from './folder/FolderSidebar';
 import NotefulContext from './contextFolder/notefulContext'
+import AddNote from './note/addNote'
 
 class App extends Component {
   constructor(props){
@@ -61,12 +62,26 @@ class App extends Component {
     this.setState({notes:newNote})
   }
 
+  addFolderHandle=(newFolder)=>{
+    const newFolders=this.state.folders
+    newFolders.push(newFolder)
+    this.setState({folders:newFolders})
+  }
+
+  addNoteHandle=(newNote)=>{
+    const newNotes = this.state.notes
+    newNotes.push(newNote)
+    this.setState({notes:newNotes})
+  }
+
   render() {
     console.log(this.state,'testing state data')
     const value={
       folders:this.state.folders,
       notes:this.state.notes,
-      removeNote:this.removeNoteHandle
+      removeNote:this.removeNoteHandle,
+      addFolder:this.addFolderHandle,
+      addNote:this.addNoteHandle
     }
     return (
       <NotefulContext.Provider value={value}>
@@ -98,8 +113,10 @@ class App extends Component {
       <Route path='/note/:noteId' 
          component={Note}/>
       
-      
-          
+      <Route path='/folder/addFolder'
+        component = {AddFolder}/>
+          <Route path='/notes/addNote'
+          component = {AddNote}/>
           
         </main>
       </div>
