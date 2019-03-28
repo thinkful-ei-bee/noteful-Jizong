@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import {Route,Link} from 'react-router-dom'
-import Data from './data/Data'
+
 import MainSidebar from './main/MainSidebar'
 import FolderMain from './folder/FolderMain'
 import MainMain from './main/MainMain'
@@ -14,7 +14,8 @@ class App extends Component {
     super(props)
     this.state={
       folders:[],
-      notes:[]
+      notes:[],
+      error:''
     }
 
   }
@@ -22,15 +23,50 @@ class App extends Component {
   
   
   componentDidMount(){
-    setTimeout(() => this.setState(Data), 600)
+    
+    fetch("http://localhost:9090/folders").then(
+     res=> {if(!res.ok){
+       return res.json().then(error=>{throw new Error(error)})
+     }
+     return res.json()
+    }
+     
+    ).then(folders=>{
+      this.setState({folders:folders})
+    }).catch(error=>{this.setState({
+      error:error
+    })
+
+    });
+    fetch("http://localhost:9090/notes").then(
+     res=> {if(!res.ok){
+       return res.json().then(error=>{throw new Error(error)})
+     }
+     return res.json()
+    }
+     
+    ).then(notes=>{
+      this.setState({notes:notes})
+    }).catch(error=>{this.setState({
+      error:error
+    })
+
+    })
 
   }
-  
+
+  removeNoteHandle=(noteId)=>{
+    const newNote = this.state.notes.filter(note=>note.id!==noteId)
+    console.log(newNote,'test newNote')
+    this.setState({notes:newNote})
+  }
+
   render() {
-    console.log(this.state)
+    console.log(this.state,'testing state data')
     const value={
       folders:this.state.folders,
-      notes:this.state.notes
+      notes:this.state.notes,
+      removeNote:this.removeNoteHandle
     }
     return (
       <NotefulContext.Provider value={value}>
