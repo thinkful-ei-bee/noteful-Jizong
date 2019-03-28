@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import {Route,Link} from 'react-router-dom'
-import Data from './data/Data'
 import MainSidebar from './main/MainSidebar'
 import FolderMain from './folder/FolderMain'
 import MainMain from './main/MainMain'
@@ -22,15 +21,48 @@ class App extends Component {
   
   
   componentDidMount(){
-    setTimeout(() => this.setState(Data), 600)
-
+    
+    fetch('http://localhost:9090/folders').then(
+      res=>{
+        if(!res.ok){
+          return res.json().then(
+            err=> {throw new Error(err)}
+          )
+        }
+        return res.json()
+      }
+    ).then(folders=>{
+      this.setState({folders:folders})
+    }).catch(err=>console.log(err));
+    fetch('http://localhost:9090/notes').then(
+      res=>{
+        if(!res.ok){
+          return res.json().then(
+            err=> {throw new Error(err)}
+          )
+        }
+        return res.json()
+      }
+    ).then(notes=>{
+      this.setState({notes:notes})
+    }).catch(err=>console.log(err))
   }
-  
+  deleteNote = noteId =>{
+    console.log(this.notes,'test this.note')
+    const newNotes = this.state.notes.filter(
+      note=>note.id !==noteId
+    )
+
+    this.setState({
+      notes:newNotes
+    })
+  }
   render() {
-    console.log(this.state)
+    console.log(this.state,'test state data')
     const value={
       folders:this.state.folders,
-      notes:this.state.notes
+      notes:this.state.notes,
+      deleteNote:this.deleteNote
     }
     return (
       <NotefulContext.Provider value={value}>
