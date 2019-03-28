@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import {Route,Link} from 'react-router-dom'
-import Data from './data/Data'
+import NoteContext from './context/NoteContext'
 import MainSidebar from './main/MainSidebar'
 import FolderMain from './folder/FolderMain'
 import MainMain from './main/MainMain'
@@ -18,16 +18,41 @@ class App extends Component {
 
   }
   
-  
-  
-  componentDidMount(){
-    setTimeout(() => this.setState(Data), 600)
-
+  componentDidMount() {
+    Promise.all ([
+      fetch (`http://localhost:9090/notes`),
+      fetch (`http://localhost:9090/folders`)])
+    .then(([notesResponse, foldersResponse]) => {
+      if (!notesResponse.ok){
+        throw new Error (notesResponse.status)
+      }
+      if (!foldersResponse.ok){
+        throw new Error (foldersResponse)
+      }
+      return Promise.all([notesResponse.json(), foldersResponse.json()])
+    })
+    .then (arrOfJsonRes => {
+      console.log(arrOfJsonRes)
+      this.setState({
+        notes: arrOfJsonRes[0],
+        folders: arrOfJsonRes[1], 
+      })
+    })
+    .catch(err => console.log(err));
   }
   
   render() {
+    const contextValue = {
+      folders: this.state.folders,
+      notes: this.state.notes,
+      // deleteNote: this.deleteNote,
+      // addFolder: this.addFolder,
+      // addNote: this.addNote
+    }
     console.log(this.state)
+
     return (
+      <NoteContext.Provider value={contextValue}> 
       <div className="App">
         <header>
           <Link to='/'>
@@ -35,45 +60,31 @@ class App extends Component {
           </Link>
         </header>
         <nav>
-        <Route exact path='/' 
-        render={routeProps=>{
-          const data=this.state
-          return (<MainSidebar data={data} {...routeProps}/>)
-        }
-      }/>
+        <Route 
+          exact 
+          path='/' 
+          component={MainSidebar}
+          />
         <Route path='/folder' 
-        render={routeProps=>{
-          const data=this.state
-          return (<FolderSidebar data={data} {...routeProps}/>)
-        }
-      }/>
-       
+          component={FolderSidebar}
+        />
         </nav>
         
         <main>
         <Route exact path='/' 
-        render={routeProps=>{
-          const data=this.state
-          return (<MainMain data={data} {...routeProps}/>)
-        }
-      }/>
-          <Route path='/folder/:folderId' 
-        render={routeProps=>{
-          const data=this.state
-          return (<FolderMain data={data} {...routeProps}/>)
-        }
-      }/>
+          component={MainMain} 
+          />
+          
+        <Route path='/folder/:folderId' 
+          component={FolderMain} 
+        />
 
       <Route path='/note/:noteId' 
-        render={routeProps=>{
-          const data=this.state
-          return (<Note data={data} {...routeProps}/>)
-        }
-      }/>
-          
-          
+          component={Note} 
+          />  
         </main>
       </div>
+      </NoteContext.Provider>
     );
   }
 }

@@ -1,12 +1,17 @@
 import React from 'react'
-
 import {Link} from 'react-router-dom'
+import NoteContext from '../context/NoteContext'
+
+
 class MainSidebar extends React.Component{
+
+  static contextType = NoteContext;
+
   render(){
-    console.log(this.props.data,'test routeprop')
+    console.log(this.context,'test routeprop')
     return(
       <ul>
-      {this.props.data.folders.map(folder=>
+      {this.context.folders.map(folder=>
       <li key={folder.id}>
       <Link to={`/folder/${folder.id}`}>
       {folder.name}

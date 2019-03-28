@@ -1,13 +1,18 @@
 import React from 'react'
-import Data from '../data/Data'
+import NoteContext from '../context/NoteContext'
 import {Link} from 'react-router-dom'
+
+
 class FolderMain extends React.Component{
+
+  static contextType = NoteContext;
+
 render(){
   
-  //console.log('testing props',this.props.match.params.folderId)
+  // console.log('testing props',this.props.match.params.folderId)
   //console.log(Data.notes,'test data note')
-  const notesForFolder = Data.notes.filter(note=>
-    note.folderId===this.props.match.params.folderId
+  const notesForFolder = this.context.notes.filter(note=>
+    note.folderId===this.context.match.params.folderId
   )
   //console.log(notesForFolder,'test noteforfolder')
   return(
