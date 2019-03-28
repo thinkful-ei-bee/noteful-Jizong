@@ -1,8 +1,34 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import NoteContext from '../context/NoteContext'
 import Data from '../data/Data'
 
-class Note extends React.Component{
+export default class Note extends React.Component{
+
+  static contextType = NoteContext;
+
+  deleteNoteRequest = (noteId, callback) => {
+    let self = this;
+    fetch(`http://localhost:9090/notes/${noteId}`, {
+      method: 'DELETE'
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(error => {
+            throw error;
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        self.props.history.push('/');
+        callback(noteId);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
   render(){
     const noteForRender = Data.notes.filter(note=>
       note.id ===this.props.match.params.noteId)
@@ -18,7 +44,11 @@ class Note extends React.Component{
       </li>
       </ul>
         {noteForRender[0].content}
-        <button type='button'>Delete</button>
+        <button onClick={() => 
+          this.deleteNoteRequest(this.props.id, this.context.deleteNote)
+          }>Delete
+        </button>
+        
         <Link to={`/folder/${noteForRender[0].folderId}`}>
           Return
         </Link>
@@ -27,5 +57,3 @@ class Note extends React.Component{
     )
   }
 }
-
-export default Note

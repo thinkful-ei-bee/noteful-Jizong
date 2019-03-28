@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 import {Route,Link} from 'react-router-dom'
 import NoteContext from './context/NoteContext'
@@ -6,9 +6,11 @@ import MainSidebar from './main/MainSidebar'
 import FolderMain from './folder/FolderMain'
 import MainMain from './main/MainMain'
 import Note from './note/Note'
+import AddNote from './addNote/AddNote'
+import AddFolder from './addFolder/AddFolder'
 import FolderSidebar from './folder/FolderSidebar';
 
-class App extends Component {
+export default class App extends React.Component {
   constructor(props){
     super(props)
     this.state={
@@ -41,15 +43,29 @@ class App extends Component {
     .catch(err => console.log(err));
   }
   
+  addNote = noteObj => {
+    const newNotes = [...this.state.notes, noteObj];
+    this.setState({ notes: newNotes });
+  };
+
+  deleteNote = noteId => {
+    const newNotes = this.state.notes.filter(note => note.id !== noteId);
+    this.setState({ notes: newNotes });
+  };
+
+  addFolder = folderObj => {
+    const newFolders = [...this.state.folders, folderObj];
+    this.setState({ folders: newFolders });
+  };
+
   render() {
     const contextValue = {
       folders: this.state.folders,
       notes: this.state.notes,
-      // deleteNote: this.deleteNote,
-      // addFolder: this.addFolder,
-      // addNote: this.addNote
+      deleteNote: this.deleteNote,
+      addFolder: this.addFolder,
+      addNote: this.addNote
     }
-    console.log(this.state)
 
     return (
       <NoteContext.Provider value={contextValue}> 
@@ -79,14 +95,18 @@ class App extends Component {
           component={FolderMain} 
         />
 
-      <Route path='/note/:noteId' 
+        <Route path='/note/:noteId' 
           component={Note} 
           />  
+        <Route path='/addNote/add-note' 
+          component={AddNote}
+          />
+         <Route path='/addFolder/add-folder' 
+          component={AddFolder}
+          />
         </main>
       </div>
       </NoteContext.Provider>
     );
   }
 }
-
-export default App;
