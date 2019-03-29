@@ -1,31 +1,37 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import NotefulContext from '../contextFolder/notefulContext';
-
+import ValidateFolderName from './validationFolderName'
 // note:
 // need to validate folder name with no repeat 
 
 class AddFolder extends React.Component{
+
+
+
   static contextType = NotefulContext
   constructor(props){
     super(props)
     this.state={
-      name:''
+      name:'',
+      nameValid:false,
+      validationMessages:{
+        name:''
+      }
     }
   }
   
-  handleInput=(e)=>{
-    this.setState({name:e.target.value})
+  handleInput=(name)=>{
+    //console.log(e.target,'test handleinput')
+    this.setState({name:name},()=>this.validateName(name))
   }
   
-  addFolderRequest=()=>{
-    
-  }
+
 
   formSubmithandle=(e)=>{
-
+   
     e.preventDefault()
-    console.log(this.state,'test state in submit handle')
+    //console.log(this.state,'test state in submit handle')
     fetch(`http://localhost:9090/folders`, {
   method: 'POST',
   headers: {
@@ -39,15 +45,34 @@ class AddFolder extends React.Component{
   return res.json()
 }).then(
   (data)=>{
-    console.log('added test',data)
+    //console.log('added test',data)
     this.context.addFolder(data)
     this.props.history.push('/')
   }
 )
   }
-
+validateName=(fieldValue)=>{
+  const fieldError={...this.state.validationMessages};
+  let hasError = false;
+  
+  //fieldValue = fieldValue.trim()
+  console.log(fieldValue,'test fieldvalue')
+  if(fieldValue.length===0){
+    fieldError.name ='Name is required';
+    
+    hasError = true;
+    
+  }else{
+    fieldError.name = ''
+    hasError=false;
+  }
+  this.setState({
+    validationMessages:fieldError,
+    nameValid:!hasError
+  })
+}
   render(){
-    console.log(this.state)
+    //console.log(this.state)
     return(
       <div className='add-new-folder-container'>
         <form className='add-new-folder-form'
@@ -56,7 +81,8 @@ class AddFolder extends React.Component{
       
         <label> Name:
         <input id='add-folder' name='add-folder'
-          onChange={(e)=>this.handleInput(e)}/>
+          onChange={(e)=>this.handleInput(e.target.value)}/>
+          <ValidateFolderName hasError={!this.state.nameValid} message={this.state.validationMessages.name}/>
         </label>
           <button type="submit">Submit</button>
         </form>

@@ -15,7 +15,7 @@ class MainSidebar extends React.Component{
       </Link>
       </li>
     )}
-    <button>Add folder</button>
+    <Link to='/folder/addFolder'>Add folder</Link>
       </ul>
     )
   }

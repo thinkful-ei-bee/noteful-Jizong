@@ -9,6 +9,7 @@ import Note from './note/Note'
 import FolderSidebar from './folder/FolderSidebar';
 import NotefulContext from './contextFolder/notefulContext'
 import AddNote from './note/addNote'
+import NotefulError from './errorBoundary/notefulError'
 
 class App extends Component {
   constructor(props){
@@ -58,7 +59,7 @@ class App extends Component {
 
   removeNoteHandle=(noteId)=>{
     const newNote = this.state.notes.filter(note=>note.id!==noteId)
-    console.log(newNote,'test newNote')
+    //console.log(newNote,'test newNote')
     this.setState({notes:newNote})
   }
 
@@ -75,7 +76,7 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state,'testing state data')
+    //console.log(this.state,'testing state data')
     const value={
       folders:this.state.folders,
       notes:this.state.notes,
@@ -93,6 +94,8 @@ class App extends Component {
           </Link>
         </header>
         <nav>
+    
+        
         <Route exact path='/' 
         component={MainSidebar}/>
      
@@ -103,6 +106,7 @@ class App extends Component {
         </nav>
         
         <main>
+        <NotefulError>
         <Route exact path='/' 
          component={MainMain}/>
         
@@ -117,7 +121,7 @@ class App extends Component {
         component = {AddFolder}/>
           <Route path='/notes/addNote'
           component = {AddNote}/>
-          
+     </NotefulError>
         </main>
       </div>
       </NotefulContext.Provider>
