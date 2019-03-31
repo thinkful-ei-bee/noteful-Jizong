@@ -30,8 +30,8 @@ class AddNote extends React.Component{
   }
   newNoteRequest=(e)=>{
     e.preventDefault()
-    
-    if(!this.state.folderId)
+    console.log(JSON.stringify(this.state),'test this.state in request handle')
+    if(this.state.folderId)
     fetch(`http://localhost:9090/notes`, {
   method: 'POST',
   headers: {
@@ -42,12 +42,13 @@ class AddNote extends React.Component{
   if(!res.ok){
     return res.json().then(error=>{throw new Error(error)})
   }
+  
   return res.json()
 }).then(
   (data)=>{
     console.log('added test',data)
     this.context.addNote(data)
-    this.props.history.push('/')
+    this.props.history.push(`/folder/${this.state.folderId}`)
   })
   }
 
@@ -64,12 +65,12 @@ class AddNote extends React.Component{
     let newFolder = e.target.value
     const foundFolder = this.context.folders.filter(folder=>folder.name===newFolder)
     console.log(foundFolder[0].id,'test found folder')
-    
+    this.setState({folderId:foundFolder[0].id})
   }
 
   render(){
    
-    console.log(this.state,'test state')
+    console.log(this.props.match,'this.context test')
     
     console.log(JSON.stringify(this.state),'test state json')
     const folderOption = this.context.folders.map(folder=>

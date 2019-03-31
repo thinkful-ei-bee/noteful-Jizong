@@ -17,6 +17,7 @@ const noteRemoveRequest=(noteId,callback)=>{
   }return res.json()
   
 }).then(()=>{
+  console.log('test delete handle noteId',noteId)
   callback(noteId)
 })
 }

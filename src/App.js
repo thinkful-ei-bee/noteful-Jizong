@@ -42,9 +42,10 @@ class App extends Component {
     });
     fetch("http://localhost:9090/notes").then(
      res=> {if(!res.ok){
-       return res.json().then(error=>{throw new Error(error)})
+       return res.json()
+        .then(error=>{throw new Error(error)})
      }
-     return res.json()
+      return res.json()
     }
      
     ).then(notes=>{
@@ -59,8 +60,9 @@ class App extends Component {
 
   removeNoteHandle=(noteId)=>{
     const newNote = this.state.notes.filter(note=>note.id!==noteId)
-    //console.log(newNote,'test newNote')
+    console.log(newNote,'test newNote')
     this.setState({notes:newNote})
+    
   }
 
   addFolderHandle=(newFolder)=>{
@@ -98,7 +100,6 @@ class App extends Component {
         
         <Route exact path='/' 
         component={MainSidebar}/>
-     
         <Route path='/folder' 
          component={FolderSidebar}/>
      
@@ -106,22 +107,13 @@ class App extends Component {
         </nav>
         
         <main>
-        <NotefulError>
-        <Route exact path='/' 
-         component={MainMain}/>
-        
-          <Route path='/folder/:folderId' 
-         component={FolderMain}/>
-      
-
-      <Route path='/note/:noteId' 
-         component={Note}/>
-      
-      <Route path='/folder/addFolder'
-        component = {AddFolder}/>
-          <Route path='/notes/addNote'
-          component = {AddNote}/>
-     </NotefulError>
+          
+            <Route exact path='/' component={MainMain}/>      
+            <Route path='/folder/:folderId' component={FolderMain}/>
+            <Route path='/note/:noteId' component={Note}/>        
+            <Route path='/folder/addFolder' component = {AddFolder}/>
+            <Route path='/notes/addNote' component = {AddNote}/>
+          
         </main>
       </div>
       </NotefulContext.Provider>
